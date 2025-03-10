@@ -15,43 +15,55 @@ while True:
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((HOST, PORT))
-
     client_socket.send(opcion.encode()) 
 
-    if opcion == "1":
+    if opcion == "1":  
         lista = client_socket.recv(1024).decode()
         print("\nArchivos disponibles:")
         print(lista)
 
-    elif opcion == "2":
+    elif opcion == "2":  
         nombre_archivo = input("Ingrese el nombre del archivo a descargar: ")
         client_socket.send(nombre_archivo.encode())
 
-        datos = client_socket.recv(1024)
-        if b"ERROR" in datos:
-            print("\nArchivo no encontrado en el servidor.")
-        else:
+        respuesta = client_socket.recv(1024)
+        if respuesta == b"OK":
+            file_size = int(client_socket.recv(1024).decode())  
+            received_size = 0
             with open(nombre_archivo, "wb") as f:
-                f.write(datos)
+                while received_size < file_size:
+                    datos = client_socket.recv(1024)
+                    if not datos:
+                        break
+                    f.write(datos)
+                    received_size += len(datos)
             print("\nArchivo descargado correctamente.")
 
-    elif opcion == "3":
-        nombre_archivo = input("Ingrese el nombre del archivo a subir: ")
+            if nombre_archivo.endswith(".txt"):  
+                with open(nombre_archivo, "r", encoding="utf-8") as f:
+                    print("\nContenido del archivo:")
+                    print(f.read())
+        else:
+            print("\nArchivo no encontrado en el servidor.")
 
+    elif opcion == "3":  # Subir archivo
+        nombre_archivo = input("Ingrese el nombre del archivo a subir: ")
         try:
             with open(nombre_archivo, "rb") as f:
                 contenido = f.read()
             client_socket.send(nombre_archivo.encode())  
-            client_socket.send(contenido) 
-            mensaje = client_socket.recv(1024).decode()
-            print("\n", mensaje)
+            confirmacion = client_socket.recv(1024)
+            if confirmacion == b"OK":
+                client_socket.send(contenido) 
+                print("\nArchivo subido correctamente.")
+            else:
+                print("\nError en la subida del archivo.")
         except FileNotFoundError:
-            print("\nEl archivo no existe. ")
+            print("\nEl archivo no existe.")
 
-    elif opcion == "4":
+    elif opcion == "4":  
         print("\nCerrando conexion.")
         client_socket.close()
         break
 
     client_socket.close()
-
