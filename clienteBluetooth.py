@@ -2,7 +2,7 @@ import socket
 import os
 
 HOST_MAC = "98:46:0A:9E:63:2A"
-PORT = 5  # Debe coincidir con el puerto del servidor
+PORT = 6  # Debe coincidir con el puerto del servidor
 # CV Address: 98:46:0a:9e:63:2a
 
 def menu():
