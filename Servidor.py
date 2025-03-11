@@ -1,7 +1,8 @@
 import socket
 import os
+import time
 
-HOST = "0.0.0.0"
+HOST = "10.12.41.110"
 PORT = 65535
 
 DIRECTORIO = "archivos"
@@ -32,6 +33,7 @@ def manejar_cliente(conn, addr):
                     with open(ruta, "rb") as f:
                        file_size = os.path.getsize(ruta)
                        conn.sendall(str(file_size).encode())  
+                       time.sleep(0.1)
                        conn.sendall(f.read())
                 else:
                     conn.sendall(b"ERROR: Archivo no encontrado.")

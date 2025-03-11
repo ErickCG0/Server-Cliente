@@ -1,6 +1,6 @@
 import socket
 
-HOST = "127.0.0.1"
+HOST = "10.12.41.110"
 PORT = 65535  
 
 def menu():
