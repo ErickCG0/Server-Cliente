@@ -3,7 +3,7 @@ import os
 
 SERVER_MAC = "14:5A:FC:1E:8C:10"
 PORT = 5  # Debe coincidir con el puerto del servidor
-
+# CV Address: 98:46:0a:9e:63:2a
 def send_data(sock, message):
     """Envía un mensaje codificado al servidor."""
     sock.send(message.encode())
